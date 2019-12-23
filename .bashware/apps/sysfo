@@ -1,0 +1,63 @@
+#!/bin/bash
+
+#sudo apt install neofetch
+#sudo apt install lolcat
+
+if [[ $1 == "" ]]; then
+	echo "Displaying System Info" | lolcat
+	neofetch $2
+	echo "Displaying 256 Colors" | lolcat
+	bg_color=0
+	for bg_color in {1..256}; do
+		echo -n "$(tput setab $bg_color) $bg_color "
+		echo -n "$(tput sgr0) "
+	done
+	tput sgr0
+	echo "
+Displaying all 7-Color-Combinations" | lolcat
+	
+	printf '\n'
+	
+	bg_color=0
+	fg_color=0
+	for fg_color in {1..7}; do
+		set_fg=$(tput setaf $fg_color)
+		for bg_color in {1..7}; do
+			set_bg=$(tput setab $bg_color)
+			echo -n "$set_bg$set_fg"
+			printf ' BG:%s FG:%s ' $bg_color $fg_color
+			echo -n "$(tput sgr0) "
+		done
+		echo ""
+	done
+	echo "$(tput sgr0)"
+elif [[ $1 == "only7" ]]; then
+	echo "Displaying all 7-Color-Combinations" | lolcat
+	
+	printf '\n'
+	
+	bg_color=0
+	fg_color=0
+	for fg_color in {1..7}; do
+		set_fg=$(tput setaf $fg_color)
+		for bg_color in {1..7}; do
+			set_bg=$(tput setab $bg_color)
+			echo -n "$set_bg$set_fg"
+			printf ' BG:%s FG:%s ' $bg_color $fg_color
+			echo -n "$(tput sgr0) "
+		done
+		echo ""
+	done
+	echo "$(tput sgr0)"
+elif [[ $1 == "only256" ]]; then
+	echo "Displaying 256 Colors" | lolcat
+	bg_color=0
+	for bg_color in {1..256}; do
+		echo -n "$(tput setab $bg_color) $bg_color "
+		echo -n "$(tput sgr0) "
+	done
+	tput sgr0
+elif [[ $1 == "onlyinfo" ]]; then
+	echo "Displaying System Info" | lolcat
+	neofetch
+fi

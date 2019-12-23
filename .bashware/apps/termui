@@ -1,0 +1,146 @@
+#!/bin/bash
+function theme () {
+	if [[ $1 == "dark" ]]; then
+		termuibackground=234
+		termuitextcolor=256
+	elif [[ $1 == "amoled" ]]; then
+		termuibackground=232
+		termuitextcolor=256
+	elif [[ $1 == "default" ]]; then
+		termuibackground=239
+		termuitextcolor=256
+	elif [[ $1 == "light" ]]; then
+		termuibackground=256
+		termuitextcolor=232
+	elif [[ $1 == "classic" ]]; then
+		termuibackground=21
+		termuitextcolor=256
+	else
+		err 1
+	fi
+}
+function err () {
+	if [[ $1 == 1 ]]; then
+		echo "Error $1: Invalid Option"
+	fi
+}
+theme default
+while true; do
+	tput setab $termuibackground
+	tput setaf $termuitextcolor
+	tput clear
+	echo "You have entered TermUI"
+	echo "Current directory is $(pwd)"
+	echo "There are $(ls -1q | wc -l) files in this directory"
+	printf "Displaying files and folders: \n$(ls -CF)\n"
+	tput sc
+	echo "What would you like to do now?"
+	echo "1) Create ..
+2) Remove ..
+3) Run ..
+4) Change ..
+5) Exit"
+	read -n1 -p "> " action
+	tput cud1
+	if [[ $action == 1 ]]; then
+		tput rc; tput ed
+		echo "What would you like to create?"
+		echo "1) File
+2) Folder
+3) Go back"
+		read -n1 -p "> " createwhat
+		if [[ $createwhat == 1 ]]; then
+			tput rc; tput ed
+			echo "Please enter the name of your file. (No spaces)"	
+			read -p "> " filename
+			touch $filename
+			echo "Task finished!"
+		elif [[ $createwhat == 2 ]]; then
+			tput rc; tput ed
+			echo "Please enter the name of your folder. (No spaces)"
+			read -p "> " foldername
+			mkdir $foldername
+		elif [[ $createwhat == 3 ]]; then 
+			echo "Going back..."
+		else
+			echo "Error 1: Invalid Option."
+			sleep 1
+		fi
+	elif [[ $action == 2 ]]; then
+		tput rc; tput ed
+		echo "What would you like to delete? (NOTE: THIS IS A DANGEROUS OPERATION, I WILL NOT BE RESPONSIBLE FOR ANY DAMAGE DONE TO YOUR SYSTEM)"
+		echo "1) File
+2) Folder
+3) Go back"
+		read -n1 -p "> " whattodelete
+		if [[ $whattodelete == 1 ]]; then
+			tput rc; tput ed
+			echo "Enter the name of the file you would like to delete (AGAIN, I DON'T TAKE RESPONSIBILITY FOR ANY DAMAGE DONE TO YOUR SYSTEM)"
+			read -p "> " filetodelete
+			rm $filetodelete
+		elif [[ $whattodelete == 2 ]]; then
+			tput rc; tput ed
+			echo "Enter the name of the folder you would like to remove (The folder has to be empty)"
+			read -p "> " foldertodelete
+			rmdir $foldertodelete
+		fi
+	elif [[ $action == 3 ]]; then
+		tput rc; tput ed
+		echo "What would you like to run?"
+		echo "1) File/Command/Program
+2) baSHWaRE APPlEt
+3) Go back"
+		read -n1 -p "> " whattorun
+		if [[ $whattorun == 1 ]]; then
+			tput rc; tput ed
+			echo "What would you like to run? (for scripts that are locally stored, please use ./ before entering said script name)"
+			read -p "> " filetorun
+			tput sgr0
+			tput clear
+			eval $filetorun
+			sleep 2
+		elif [[ $whattorun == 2 ]]; then
+			tput rc; tput ed
+			echo "Which APPlEt would you like to run?"
+			echo "Available applets:"
+			afile="0"
+			for afile in ~/.bashware/apps/*; do
+				echo $afile
+			done
+			read -p "> " applettorun
+			eval "~/.bashware/apps/$applettorun
+			sleep 2"
+		fi
+	elif [[ $action == 4 ]]; then
+		tput rc; tput ed
+		echo "What would you like to change?"
+		echo "1) Filename/File location"
+		echo "2) Directory"
+		echo "3) TermUI Theme"
+		echo "4) Go back"
+		read -n1 -p "> " changewhat
+		if [[ $changewhat == 1 ]]; then
+			tput rc; tput ed
+			echo "What is the name/location of the original file?"
+			read -p "> " originalname
+			tput rc; tput ed
+			echo "What is the new name/location of the file?"
+			read -p "> " newname
+			mv $originalname $newname
+		elif [[ $changewhat == 2 ]]; then
+			tput rc; tput ed
+			echo "Which directory would you like to change to?"
+			read -p "> " newdir
+			cd $newdir
+		elif [[ $changewhat == 3 ]]; then
+			tput rc; tput ed
+			echo "Which theme would you like to change to?"
+			read -p "> " newtheme
+			theme $newtheme
+		fi
+	elif [[ $action == 5 ]]; then
+		exit
+	else 
+		err 1
+	fi
+done

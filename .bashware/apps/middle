@@ -1,0 +1,14 @@
+#!/bin/bash
+tput sc; tput smcup
+if [[ $1 == "clear" ]]; then tput clear; fi
+for o in {1..248}; do
+	lines=$(( $(tput lines) / 2 - 1 ))
+	cols=$(( $(tput cols) / 2 - 6 ))
+	tput cup $lines $cols
+	tput setaf $o
+	echo -n " $(tput setaf $o)H$(tput setaf $(( $o + 1 )))e$(tput setaf $(( $o + 2 )))l$(tput setaf $(( $o + 3)))l$(tput setaf $(( $o + 4 )))o$(tput setaf $(( $o + 5 )))! "
+	sleep 0.01
+done
+tput sgr0
+function rac () { tput rc; tput rmcup }
+trap rac SIGINT exit

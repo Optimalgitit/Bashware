@@ -1,0 +1,38 @@
+# bashware - before upgrading, remove everything below
+
+# options/config
+	
+greeter=true # set this to false to turn off the greeter
+customps1=true # set this to false if you want the default PS1
+customps2=true # set this to false if you want the default PS2
+customps3=true # set this to false if you want the default PS3
+customps4=true # set this to false if you want the default PS4
+
+# some variables
+
+bashutilfo="$(tput setaf 1)baSHWaRE $(tput setaf 2)final beta$(tput sgr0)"
+cps1="\n$(tput setaf 1)|---ubuntu-$(tput setaf 6)xfce $(tput setaf 4)\t \d\n$(tput setaf 1)|--$(tput setaf 3)${debian_chroot:+($debian_chroot)}\u@\h:$(tput setaf 5)\w\$$(tput setaf 1)\n|-$(tput sgr0)"
+notcps1="${debian_chroot:+($debian_chroot)}\u@\h:\w\$"
+
+# greeter
+if [[ $greeter == true ]]; then
+	echo "${bashutilfo}"
+fi
+	
+# custom ps variables
+
+if [[ $customps1 == true ]]; then
+	PS1=$cps1
+fi
+
+if [[ $customps2 == true ]]; then
+	PS2="$(tput setaf 3)\u@\h :: $(tput setaf 5)${LINENO} | $(tput sgr0) "
+fi
+
+if [[ $customps3 == true ]]; then
+	PS3="$(tput setaf 1)Make selection: $(tput sgr0)"
+fi
+
+if [[ $customps4 == true ]]; then
+	PS4="$(tput setaf 1)Line ${LINENO}: $(tput sgr0)"
+fi

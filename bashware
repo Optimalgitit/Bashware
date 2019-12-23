@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# some vars
+
+cps1="\n$(tput setaf 1)|---ubuntu-$(tput setaf 6)xfce $(tput setaf 4)\t \d\n$(tput setaf 1)|--$(tput setaf 3)${debian_chroot:+($debian_chroot)}\u@\h:$(tput setaf 5)\w\$$(tput setaf 1)\n|-$(tput sgr0)"
+bashutilfo="$(tput setaf 1)baSHWaRE $(tput setaf 2)final beta$(tput sgr0)"
+
+# bashwareutils
+
+if [[ $# == 0 ]]; then
+	echo "
+Please use bashware --help for help."
+elif [[ $1 == "--help" ]] || [[ $1 == "-h" ]]; then
+	if [[ $2 == "ps1" ]]; then
+		echo "
+PS1 Options:
+
+bashware ps1 reset - resets PS1 to default
+bashware ps1 custom - sets PS1 to bashware's own custom PS1"
+	elif [[ -z $2 ]]; then
+		echo "
+${bashutilfo}
+--version - Display the bashware version
+ps1 - Customise your PS1
+launch - launches a baSHWaRE APPlEt
+ls - custom ls, pretty useless"
+	else
+		echo "Invalid Option"
+	fi
+elif [[ $1 == "--version" ]] || [[ $1 == "-v" ]]; then
+	echo "
+${bashutilfo}"
+elif [[ $1 == "ps1" ]]; then
+	if [[ $2 == "reset" ]]; then
+		PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+	elif [[ $2 == "custom" ]]; then
+		PS1=$cps1
+	elif [[ -z $2 ]]; then
+		echo "
+PS1 Options:
+
+bashware ps1 reset - resets PS1 to default
+bashware ps1 custom - sets PS1 to bashware's own custom PS1"
+	else
+		echo "Invalid Option"
+	fi
+elif [[ $1 == "ls"  ]]; then
+	i=0
+	sedded=""
+	if [[ -z $2 ]]; then
+		for i in *; do
+			echo -n "$i "
+		done
+	else
+		for i in $2/*; do
+			echo -n "$i "
+		done
+	fi
+elif [[ $1 == "launch" ]]; then
+	if [[ -z $2 ]]; then
+		afile=0
+		echo "Available bashware apps:"
+		for afile in /root/.bashware/apps/*; do
+			echo "$afile "
+		done
+	else
+		~/.bashware/apps/$2 $3 
+	fi
+else
+	echo "Invalid Option"	
+fi
